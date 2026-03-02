@@ -2,10 +2,46 @@ import { useState } from "react";
 import { useAppStore } from "../stores/app";
 import { t } from "../lib/i18n";
 import { api } from "../lib/api";
+import { authClient } from "../lib/auth-client";
 
 function currentMonth() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function AccountSection({ locale }: { locale: "en" | "id" }) {
+  const session = authClient.useSession();
+  const { setPage } = useAppStore();
+
+  if (session.data?.user) {
+    return (
+      <div className="space-y-2">
+        <p className="text-sm text-white">{session.data.user.email}</p>
+        <p className="text-xs text-gray-500">{session.data.user.name}</p>
+        <button
+          onClick={async () => {
+            await authClient.signOut();
+            setPage("home");
+          }}
+          className="rounded-xl bg-red-600/20 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-600/30 transition-colors"
+        >
+          {t("settings.logout", locale)}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-gray-500 mb-2">{t("settings.notLoggedIn", locale)}</p>
+      <button
+        onClick={() => setPage("home")}
+        className="rounded-xl bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-500 transition-colors"
+      >
+        {t("settings.loginSignup", locale)}
+      </button>
+    </div>
+  );
 }
 
 export function SettingsPage() {
@@ -110,6 +146,14 @@ export function SettingsPage() {
               </p>
             )}
           </div>
+        </section>
+
+        {/* Account */}
+        <section>
+          <h2 className="text-sm font-medium text-gray-400 mb-2">
+            {t("settings.account", locale)}
+          </h2>
+          <AccountSection locale={locale} />
         </section>
 
         {/* About */}

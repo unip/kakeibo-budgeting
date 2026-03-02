@@ -14,13 +14,14 @@
   },
   "dependencies": {
     "@kakeibo/shared": "workspace:*",
+    "better-auth": "^1.5.1",
+    "drizzle-orm": "^0.45.1",
     "hono": "^4",
-    "drizzle-orm": "^0.39",
     "postgres": "^3"
   },
   "devDependencies": {
     "@types/node": "^22",
-    "drizzle-kit": "^0.30",
+    "drizzle-kit": "^0.31.9",
     "tsup": "^8",
     "tsx": "^4",
     "typescript": "^5",

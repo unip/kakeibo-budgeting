@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@kakeibo/shared": "workspace:*",
+    "better-auth": "^1.5.1",
     "react": "^19",
     "react-dom": "^19",
     "zustand": "^5"
