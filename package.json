@@ -1,0 +1,19 @@
+{
+  "name": "kakeibo-budgeting",
+  "private": true,
+  "scripts": {
+    "dev:api": "pnpm --filter @kakeibo/api dev",
+    "dev:web": "pnpm --filter @kakeibo/web dev",
+    "dev": "pnpm run --parallel dev:api dev:web",
+    "build": "pnpm --filter @kakeibo/web build && pnpm --filter @kakeibo/api build",
+    "test": "pnpm -r test",
+    "test:api": "pnpm --filter @kakeibo/api test",
+    "test:web": "pnpm --filter @kakeibo/web test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}
