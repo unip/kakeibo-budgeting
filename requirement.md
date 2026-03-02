@@ -14,6 +14,7 @@ A personal Kakeibo budgeting app with chat-based transaction input. Users type n
 - **Monorepo**: pnpm workspaces
 - **Deployment**: Docker Compose on Coolify VPS
 - **Dev Tooling**: Use Context7 MCP for up-to-date documentation of all libraries during implementation
+- **Testing**: TDD approach — write tests before implementation in every phase. Vitest for backend + frontend unit/integration tests.
 
 ## Project Structure
 
@@ -50,25 +51,35 @@ kakeibo-budgeting/
 
 ## API Endpoints
 
-| Method     | Path                     | Purpose                                             |
-| ---------- | ------------------------ | --------------------------------------------------- |
-| POST       | `/api/parse`             | Parse chat text into structured transaction preview |
-| POST       | `/api/transactions`      | Save confirmed transaction                          |
-| GET        | `/api/transactions`      | List with filters (month, pillar, search, page)     |
-| PUT/DELETE | `/api/transactions/:id`  | Edit/delete                                         |
-| GET        | `/api/dashboard/summary` | Totals per pillar, budget vs actual                 |
-| GET        | `/api/dashboard/trend`   | Monthly spending over time                          |
-| GET/POST   | `/api/categories`        | Manage subcategories                                |
-| GET/PUT    | `/api/budgets/:month`    | Monthly budget goals                                |
+| Method     | Path                     | Purpose                                                            |
+| ---------- | ------------------------ | ------------------------------------------------------------------ |
+| POST       | `/api/parse`             | Parse chat text into structured transaction preview                |
+| POST       | `/api/transactions`      | Save confirmed transaction                                         |
+| GET        | `/api/transactions`      | List with filters (month, pillar, search, page)                    |
+| PUT/DELETE | `/api/transactions/:id`  | Edit/delete                                                        |
+| GET        | `/api/dashboard/summary` | Totals per pillar, budget vs actual                                |
+| GET        | `/api/dashboard/trend`   | Monthly spending over time                                         |
+| GET/POST   | `/api/categories`        | Manage subcategories                                               |
+| GET/PUT    | `/api/budgets/:month`    | Monthly budget goals                                               |
 | ALL        | `/api/auth/**`           | Better Auth handles all auth routes (signup, login, session, etc.) |
 
 ## Chat Parsing
 
-**Primary**: Groq API (free: 30 req/min, 14.4k req/day) with Llama 3.1 8B, `temperature: 0`, JSON mode. System prompt extracts label, amount, pillar, category, date, type.
+The chat input handles two intents:
 
-**Fallback**: Rule-based regex parser for amount patterns (45k, 2jt), keyword-to-pillar mapping, date keywords (yesterday/kemarin).
+1. **Transaction input**: "bought coffee 45k" → parsed into structured transaction for confirmation
+2. **Query**: "total expenses this month", "how much did I spend on wants?" → returns a summary answer in the chat
 
-**Flow**: User types → POST `/api/parse` → preview bubble → user confirms → POST `/api/transactions`
+**Intent detection**: The LLM (or rule-based fallback) first classifies the input as `transaction` or `query`. For queries, the backend fetches relevant data from the database and returns a natural language summary.
+
+**Primary**: Groq API (free: 30 req/min, 14.4k req/day) with Llama 3.1 8B, `temperature: 0`, JSON mode. System prompt extracts intent + structured data.
+
+**Fallback**: Rule-based regex parser for amount patterns (45k, 2jt), keyword-to-pillar mapping, date keywords (yesterday/kemarin). Query fallback matches keywords like "total", "how much", "summary".
+
+**Flow**:
+
+- **Transaction**: User types → POST `/api/parse` → preview bubble → user confirms → POST `/api/transactions`
+- **Query**: User types → POST `/api/parse` → backend queries DB → returns summary answer as chat bubble
 
 ## Frontend Pages
 
@@ -83,6 +94,7 @@ kakeibo-budgeting/
 - Gradient per pillar: blue (needs), purple (wants), amber (culture), pink (unexpected)
 - Bottom nav on mobile, sidebar on desktop
 - Sleek, modern, minimal — not overwhelming
+- **i18n**: Support English and Bahasa Indonesia. User can switch language in settings. Chat input accepts both languages naturally.
 
 ## Auth Model (Better Auth)
 
