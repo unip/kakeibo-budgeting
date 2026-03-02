@@ -1,4 +1,4 @@
-import type { ParseResponse, Transaction } from "@kakeibo/shared";
+import type { ParseResponse, Transaction, DashboardSummary, MonthlyBudget } from "@kakeibo/shared";
 
 const BASE = "/api";
 
@@ -62,6 +62,27 @@ export const api = {
   deleteTransaction(id: string) {
     return request<{ deleted: boolean }>(`/transactions/${id}`, {
       method: "DELETE",
+    });
+  },
+
+  getDashboardSummary(month?: string) {
+    const qs = month ? `?month=${month}` : "";
+    return request<DashboardSummary>(`/dashboard/summary${qs}`);
+  },
+
+  getDashboardTrend(months?: number) {
+    const qs = months ? `?months=${months}` : "";
+    return request<{ month: string; total: number }[]>(`/dashboard/trend${qs}`);
+  },
+
+  getBudget(month: string) {
+    return request<MonthlyBudget>(`/budgets/${month}`);
+  },
+
+  setBudget(month: string, data: Partial<MonthlyBudget>) {
+    return request<MonthlyBudget>(`/budgets/${month}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
     });
   },
 };
