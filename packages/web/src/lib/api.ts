@@ -51,4 +51,17 @@ export const api = {
     const qs = query.toString();
     return request<Transaction[]>(`/transactions${qs ? `?${qs}` : ""}`);
   },
+
+  updateTransaction(id: string, data: Partial<Transaction>) {
+    return request<Transaction>(`/transactions/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteTransaction(id: string) {
+    return request<{ deleted: boolean }>(`/transactions/${id}`, {
+      method: "DELETE",
+    });
+  },
 };
