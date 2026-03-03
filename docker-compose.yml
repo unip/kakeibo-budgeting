@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: kakeibo
       POSTGRES_PASSWORD: ${DB_PASSWORD:-kakeibo}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U kakeibo"]
       interval: 5s
