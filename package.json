@@ -4,7 +4,7 @@
   "scripts": {
     "dev:api": "pnpm --filter @kakeibo/api dev",
     "dev:web": "pnpm --filter @kakeibo/web dev",
-    "dev": "pnpm run --parallel dev:api dev:web",
+    "dev": "pnpm run --parallel dev",
     "build": "pnpm --filter @kakeibo/web build && pnpm --filter @kakeibo/api build",
     "test": "pnpm -r test",
     "test:api": "pnpm --filter @kakeibo/api test",
