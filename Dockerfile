@@ -30,13 +30,9 @@ COPY --from=build /app/packages/api/drizzle ./packages/api/drizzle
 COPY --from=build /app/packages/api/drizzle.config.ts ./packages/api/drizzle.config.ts
 COPY --from=build /app/packages/web/dist ./packages/web/dist
 COPY --from=build /app/packages/shared/src ./packages/shared/src
-COPY --from=build /app/packages/api/src ./packages/api/src
-COPY --from=build /app/packages/api/seed.sh ./packages/api/seed.sh
 
 # Set working directory to api package for execution
 WORKDIR /app/packages/api
 
-RUN chmod +x seed.sh
-
 EXPOSE 3000
-CMD ["sh", "-c", "npx drizzle-kit migrate --config=drizzle.config.ts && node dist/index.js"]
+CMD ["sh", "-c", "npx drizzle-kit migrate --config=drizzle.config.ts && node dist/db/seed.js && node dist/index.js"]
