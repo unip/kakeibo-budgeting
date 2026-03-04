@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       DATABASE_URL: postgres://kakeibo:${DB_PASSWORD:-kakeibo}@db:5432/kakeibo
       GROQ_API_KEY: ${GROQ_API_KEY:-}
